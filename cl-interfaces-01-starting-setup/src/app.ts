@@ -1,5 +1,8 @@
 // readonly : 초기화 후에 수정 불가
-class Department {
+// abstract : 추상 키워드 기본 클래스(상위 클래스)를 상속받은 클래스들로 하여금 abstract 키워드를 사용한 메서드 등을 구현하도록 강제한다
+// abstract로 지정된 추상 클래스는 인스턴스화 할 수 없다. 따라서 Department 추상 클래스의 인스턴스는 생성할 수 없다. 상속받기 위해서만 존재하는 클래스이다.
+
+abstract class Department {
   static fiscalYear = 2020; //static을 사용한 정적인 메소드, 프로퍼티는 정적이지 않은 요소에서 사용할 수 없다.
   // private readonly id: string; - 생략
   // private name: string; - 생략
@@ -17,11 +20,9 @@ class Department {
     return { name: name };
   }
 
-  describe(
+  abstract describe(
     this: Department /* typescript에서 사용할수 있는 특수한 매개변수 this가 참고할 클래스를 지정할 수 있음 */
-  ) {
-    console.log(`Department (${this.id}) : ${this.name}`);
-  }
+  ): void;
 
   addEmployee(employee: string) {
     this.employees.push(employee);
@@ -39,10 +40,14 @@ class ITDepartment extends Department {
     super(id, "IT");
     this.admins = admins; // this를 사용하려면 super 다음에 사용해야 한다 (다른 클래스를 상속 받았을 시)
   }
+  describe() {
+    console.log("IT Department - ID : " + this.id);
+  }
 }
 
 class AccountingDepartment extends Department {
   private lastReport: string;
+  private static instance: AccountingDepartment;
   get mostRecentReport() {
     //getter
     if (this.lastReport) {
@@ -56,10 +61,19 @@ class AccountingDepartment extends Department {
     }
     this.addReport(value);
   }
-  constructor(id: string, private reports: string[]) {
+  private constructor(id: string, private reports: string[]) { //private생성자를 이용한 싱글톤 패턴
     super(id, "Accounting");
     this.lastReport = reports[0];
   }
+  static getInstance() {
+    if (AccountingDepartment.instance) {
+      return this.instance; //정적 메소드에서 this는 instance가 아니라 클래스 자신 자체를 참조한다
+    }
+    this.instance = new AccountingDepartment("d2", []); //클래스 안의 메서드이므로 private 생성자(constructor) 사용 가능
+    return this.instance;
+    // instance를 한번 생성한다면 if문에 의해 다음부터는 기존 instance를 반환함
+  }
+
   describe() {
     console.log("Accounting Department - ID : " + this.id);
   }
@@ -90,7 +104,11 @@ IT.describe();
 IT.printEmployeeInformation();
 
 console.log(IT);
-const accounting = new AccountingDepartment("d2", []);
+// const accounting = new AccountingDepartment("d2", []);
+const accounting = AccountingDepartment.getInstance();
+const accounting2 = AccountingDepartment.getInstance();
+console.log(accounting, accounting2);
+
 accounting.addEmployee("Max");
 accounting.addEmployee("Manu");
 
