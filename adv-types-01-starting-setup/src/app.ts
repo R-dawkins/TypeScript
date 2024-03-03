@@ -22,13 +22,44 @@ type Combinable = string | number;
 type Numeric = number | boolean;
 type Universal = Combinable & Numeric;
 
+//함수 오버로드 : 함수 정보와 함수 선언부를 조합하여 타입스크립트가 함수의 반환 타입을 명확히 알게 하는 방법
+// 타입스크립트가 넘겨지는 인자 타입 조합에 따라 어떤 타입을 함수가 반환하는지를 명확히 알게 된다.
+
+function add(a: number, b: number): number; // 함수 정보
+function add(a: string, b: string): string; // 함수 정보
 function add(a: Combinable, b: Combinable) {
+  // 함수 선언부
   if (typeof a === "string" || typeof b === "string") {
     // >>> typeof를 사용한 타입 가드
     return a.toString() + b.toString();
   }
   return a + b;
 }
+
+const result = add("pinot", " Blanc");
+result.split(" ");
+
+//optinal chaining (선택적 체이닝) : 어떤 시점에 특정 데이터가 아직 없는, 들어오지 못한 상태일 때 사용
+// 선택적 체이닝 연산자 : .(점, dot)앞에 물음표 ?를 붙여서 사용 :
+const fetchedUserData = {
+  id: "u1",
+  name: "max",
+  job: { title: "CEO", description: "My own company" },
+};
+
+console.log(fetchedUserData?.job?.title);
+
+// 일반 자바스크립트 선택적 체이닝 방법 : console.log(fetchedUserData.job && fetchedUserData.job.title);
+
+// Null 병합 : 받아온 데이터가 null인지 어떤 값인지 모를 때 처리하는 방법
+// Null 병합 연산자 ?? : 값이 Null이거나 undefind일 때만 폴백(대비책) 값 사용
+
+const userInput = "";
+
+const storedData = userInput || "DEFAULT"; // 첫번째 값이 falsy한 값일 때 두번쨰 값 참조, 이 방법의 문제점은 null이 아니라 빈 문자열 또한 처리된다는 것
+const storedData2 = userInput ?? "DEFAULT"; // null 병합 연산자 사용
+console.log(storedData);
+console.log(storedData2);
 
 type UnknownEmployee = Employee | Admin;
 function printEmployeeInformation(emp: UnknownEmployee) {
@@ -140,3 +171,16 @@ if (userInputElement3) {
   (userInputElement3 as HTMLInputElement).value = "Hi there!";
 }
 // if문 안의 userInputElement3을 괄호로 감싸서 먼저 형 변환 처리를 하여 그 결과의 value에 접근한다.
+
+interface ErrorContainer {
+  email: string; // 미리 정의하는 속성을 추가하는 것도 가능
+  // id: number; 인덱스 속성에 지정된 것과 같이 문자열이어야 한다. 숫자면 컴파일 에러 발생
+  [prop: string]: string;
+  // 인덱스 속성 : 이 에러 컨테이너라는 인터페이스로 만들어진 객체에 추가되 는 propertie(속성)은 반드시 문자열로 인지될 수 있는 속성 이름이 있어야 하고
+  // 속성의 값은 문자열이어야 한다. (string 타입으로 지정했을 시)
+}
+
+const errorBag: ErrorContainer = {
+  email: "not a valid email!",
+  userName: "Must start with a capital character",
+};
