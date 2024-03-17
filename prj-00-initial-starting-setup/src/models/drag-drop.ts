@@ -4,7 +4,6 @@
 // 그 안에 import한 Interface를 사용하는 모든 코드(Class등)을 넣어야 사용 가능하다.
 // /// 슬래시 3개로 시작하는 특수 구문과 <reference path="경로">를 작성하여 namespace를 import할 수 있다.
 // Drag & Drop interface
-namespace App {
   export interface Draggable {
     dragStartHandler(event: DragEvent): void;
     dragEndHandler(event: DragEvent): void;
@@ -15,4 +14,3 @@ namespace App {
     dropHandler(event: DragEvent): void;
     dragLeaveHandler(event: DragEvent): void;
   }
-}
