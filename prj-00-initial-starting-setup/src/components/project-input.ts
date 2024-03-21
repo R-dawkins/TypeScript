@@ -1,9 +1,9 @@
-import { Component } from "./base-component.js";
-import { validate, Validatable } from "../util/validation.js";
-// import * as Validation from "../util/validation.js"; 그룹화 임포트
-import { Autobind } from "../decorator/autobind.js";
-// import { Autobind as autobind} from "../decorator/autobind.js"; 별명 변경
-import { projectState } from "../state/project-state.js";
+import { Component } from "./base-component";
+import { validate, Validatable } from "../util/validation";
+// import * as Validation from "../util/validation"; 그룹화 임포트
+import { Autobind } from "../decorator/autobind";
+// import { Autobind as autobind} from "../decorator/autobind"; 별명 변경
+import { projectState } from "../state/project-state";
 // ProjectInput class
 export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
   titleInputElement: HTMLInputElement;
